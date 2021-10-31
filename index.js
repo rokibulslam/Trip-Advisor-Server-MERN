@@ -76,6 +76,22 @@ async function run() {
             const result = await orderCollection.updateOne({ _id: ObjectId(id) }, { $set: { status: updateInfo.status } })
             res.send(result)
         })
+        app.put('/updateService/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+            const updateInfo = req.body
+            console.log(updateInfo)
+            const result = await hotelsCollection.updateOne({ _id: ObjectId(id) },
+                {
+                    $set: {
+                        name: updateInfo.name,
+                        price: updateInfo.price,
+                        Description: updateInfo.Description,
+                        img: updateInfo.img
+                    }
+                })
+            res.send(result)
+        })
         app.delete('/deleteService/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
@@ -105,7 +121,7 @@ async function run() {
 run().catch(console.dir)
 
 app.get('/', (req, res) => {
-    res.send('running my curd')
+    res.send('running my Tourist Server')
 
 })
 
