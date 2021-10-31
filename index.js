@@ -22,8 +22,36 @@ async function run() {
         console.log('connected to database')
         const database = client.db("touristAdvisor")
         const hotelsCollection = database.collection("hotels")
+        const orderCollection = database.collection("orders")
+        app.get('/hotels', async (req, res) => {
+            const cursor = hotelsCollection.find({})
+            const hotels = await cursor.toArray();
+            res.send(hotels)
+        })
+        app.get('/hotels/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {
+                _id: ObjectId(id)
+            };
+            const user = await hotelsCollection.findOne(query)
+            console.log('load user with id:', id)
+            res.json(user)
+        })
+        app.get('/orders', async (req, res) => {
+            const cursor = orderCollection.find({})
+            const orders = await cursor.toArray();
+            res.send(orders)
+        })
+        app.get('/orders/:email', async (req, res) => {
+            const query = {
+                email: req.params.email
+            }
+            const result = await orderCollection.find(query).toArray();
+            console.log(result)
+            res.json(result)
+        })
 
-        // POST API or add a service
+        // POST API / add a Hotels
         app.post('/hotels', async (req, res) => {
             const hotel = req.body;
             console.log('hit the post api', hotel)
@@ -32,8 +60,42 @@ async function run() {
             console.log(result)
             res.json(result);
         })
-
-
+        app.post('/orders', async (req, res) => {
+            const order = req.body;
+            console.log('hit the orders')
+            const result = await orderCollection.insertOne(order)
+            console.log(result)
+            res.json(result)
+        })
+        // Update 
+        app.put('/updateStatus/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+            const updateInfo = req.body
+            console.log(updateInfo)
+            const result = await orderCollection.updateOne({ _id: ObjectId(id) }, { $set: { status: updateInfo.status } })
+            res.send(result)
+        })
+        app.delete('/deleteService/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await hotelsCollection.deleteOne(query)
+            console.log(result)
+            console.log(id)
+            res.json(result)
+            
+        })
+        // Delete Api 
+        app.delete('/delete/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await orderCollection.deleteOne(query)
+            console.log(result)
+            console.log(id)
+            res.json(result)
+            
+        })
+        
 
     }
     finally {
