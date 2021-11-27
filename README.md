@@ -1,6 +1,6 @@
 ### Welcome To TRIP ADVISOR SERVER site
 
-### About CAR HOUSE server.
+### About TRIP ADVISOR server.
 
     * I have used most popular javascript runtime Node.js as backend language
     * Used MongoDB database
